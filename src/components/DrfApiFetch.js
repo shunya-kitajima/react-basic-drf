@@ -5,6 +5,7 @@ const DrfApiFetch = () => {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState([]);
   const [id, setId] = useState(1);
+  const [editedTask, setEditedTask] = useState({ id: "", title: "" });
 
   useEffect(() => {
     axios
@@ -37,10 +38,32 @@ const DrfApiFetch = () => {
           Authorization: "Token 04cd3ff8431e62b9b6c71dd184959548cf622ce9",
         },
       })
-      .then((res) => {
+      .then(() => {
         setTasks(tasks.filter((task) => task.id !== id));
         setSelectedTask([]);
       });
+  };
+
+  const newTask = (task) => {
+    const data = {
+      title: task.title,
+    };
+    axios
+      .post(`http://localhost:8000/api/tasks/`, data, {
+        headers: {
+          Authorization: "Token 04cd3ff8431e62b9b6c71dd184959548cf622ce9",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        setTasks([...tasks, res.data]);
+      });
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    setEditedTask({ ...editedTask, [name]: value });
   };
 
   return (
@@ -70,6 +93,15 @@ const DrfApiFetch = () => {
       <h3>
         {selectedTask.id} {selectedTask.title}
       </h3>
+      <input
+        type="text"
+        name="title"
+        value={editedTask.title}
+        onChange={handleInputChange}
+        placeholder="New task ?"
+        required
+      />
+      <button onClick={() => newTask(editedTask)}>Create</button>
     </div>
   );
 };
