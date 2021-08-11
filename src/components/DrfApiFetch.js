@@ -16,7 +16,17 @@ const DrfApiFetch = () => {
       });
   }, []);
 
-  return <div></div>;
+  return (
+    <div>
+      <ul>
+        {tasks.map((task) => (
+          <li key={task.id}>
+            {task.id} {task.title}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 };
 
 export default DrfApiFetch;
